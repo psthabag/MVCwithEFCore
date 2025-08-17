@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MVCwithEFCore.Data;
+using MVCwithEFCore.Migrations;
 using MVCwithEFCore.Models;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace MVCwithEFCore.Controllers
 {
@@ -12,21 +15,42 @@ namespace MVCwithEFCore.Controllers
             db = _db;
         }
 
-        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
+        public IActionResult AddStudent()
+        {
+            if (HttpContext.Session.GetString("MyKey") != null)
+            {
+                ViewBag.Data = HttpContext.Session.GetString("MyKey");
+            }
+
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult AddTeacher()
         {
+            var user = "Admin";
+            var pass = "Password";
+            if (user == "Admin" & pass == "Passwrod")
+            {
+                HttpContext.Session.SetString("MyKey", "admin@company.com");
+            }
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(Student student)
+        public IActionResult AddStudent(Student student)
         {
+            if(HttpContext.Session.GetString("MyKey") == null)
+            {
+                TempData["AlertMessage"] = "Please Login First...";
+                return RedirectToAction(nameof(AddStudent));
+            }
             //db for database, Students the name of table and Add to Insert data
             db.Students.Add(student);
             db.SaveChanges();
@@ -46,5 +70,42 @@ namespace MVCwithEFCore.Controllers
             return RedirectToAction(nameof(AddTeacher));
         }
 
+        public IActionResult ViewTeachers(Teacher teacher)
+        {
+            //db for database, Students the name of table and Add to Insert data
+            var teachers = db.Teachers.ToList();
+            return View(teachers);
+        }
+
+        public IActionResult ViewStudents(Student student)
+        {
+            var students = db.Students.ToList();
+            return View(students);
+        }
+
+        [HttpGet]
+        public IActionResult AddBooks()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddBooks(Book book)
+        {
+            db.Books.Add(book);
+            db.SaveChanges();
+            return RedirectToAction(nameof(Books));
+        }
+
+        public IActionResult Books(Book book)
+        {
+            var books = db.Books.ToList();
+            return View(books);
+        }
+
+        public void Logout()
+        {
+            HttpContext.Session.Remove("MyKey");
+        }
     }
 }

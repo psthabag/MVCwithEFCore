@@ -1,31 +1,28 @@
-﻿@model MVCwithEFCore.Models.Teacher
+﻿@model MVCwithEFCore.Models.Student
 
 @{
-    ViewData["Title"] = "Add Teacher";
+    ViewData["Title"] = "Add Student";
 }
 
-<h2>Add Teacher</h2>
+<h2>Add Student</h2>
+<hr />
 @{
     var msg = @TempData["AlertMessage"];
-    if (msg != "")
+    if(msg!="")
     {
         @msg
     }
+    
+
 }
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddTeacher" method="POST">
+        <form method="POST" asp-controller="Data" asp-action="AddStudent">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Subject" class="control-label"></label>
-                <input asp-for="Subject" class="form-control" />
-                <span asp-validation-for="Subject" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
@@ -50,7 +47,8 @@
         </form>
     </div>
 </div>
-
+@ViewBag.Data
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

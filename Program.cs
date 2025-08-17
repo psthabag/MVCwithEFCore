@@ -9,7 +9,7 @@ builder.Services.AddDbContext<SQLDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
     });
-
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -27,6 +27,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
