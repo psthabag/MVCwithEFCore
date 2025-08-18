@@ -4,11 +4,8 @@
     ViewData["Title"] = "Books";
 }
 
-<h1>Books</h1>
+<h1>View Books</h1>
 
-<p>
-    <a asp-action="AddBooks">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -49,11 +46,15 @@
                 @Html.DisplayFor(modelItem => item.ISBN)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
+                <a asp-action="EditBook" asp-route-id="@item.BookId">Edit</a> |
+                <a asp-action="BookDetail" asp-route-id="@item.BookId">Details</a> |
+                <a asp-action="DeleteBook" asp-route-id="@item.BookId">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<p>
+    <a asp-action="AddBooks" class="btn btn-primary">Add Book</a>
+</p>

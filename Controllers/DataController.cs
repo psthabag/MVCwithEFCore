@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MVCwithEFCore.Data;
 using MVCwithEFCore.Migrations;
 using MVCwithEFCore.Models;
@@ -103,6 +104,55 @@ namespace MVCwithEFCore.Controllers
             return View(books);
         }
 
+        public IActionResult BookDetail(int Id)
+        {
+            var books = db.Books.Find(Id);
+            return View(books);
+        }
+
+        [HttpGet]
+        public IActionResult EditBook(int Id)
+        {
+            var books = db.Books.Find(Id);
+            return View(books);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBook(Book book)
+        {
+            var books = await db.Books.FindAsync(book.BookId);
+            if (books is not null)
+            {
+                books.BookName = book.BookName;
+                books.Author = book.Author;
+                books.Publisher = book.Publisher;
+                books.YearPublished=book.YearPublished;
+                books.ISBN = book.ISBN;
+                await db.SaveChangesAsync();
+            }
+            return RedirectToAction("Books", "Data"); 
+        }
+
+        [HttpGet]
+        public IActionResult DeleteBook(int Id)
+        {
+            var books = db.Books.Find(Id);
+            return View(books);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBook(Book book)
+        {
+            var books = await db.Books
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.BookId == book.BookId);
+            if (books is not null)
+            {
+                db.Books.Remove(book);
+                await db.SaveChangesAsync();
+            }
+            return RedirectToAction("Books", "Data");
+        }
         public void Logout()
         {
             HttpContext.Session.Remove("MyKey");
